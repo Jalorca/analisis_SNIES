@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jalorca">
+
+<title>Análisis de Estudiantes Inscritos</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Analisis de estudiantes inscritos_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Analisis de estudiantes inscritos_files/libs/quarto-html/quarto.js"></script>
+<script src="Analisis de estudiantes inscritos_files/libs/quarto-html/popper.min.js"></script>
+<script src="Analisis de estudiantes inscritos_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Analisis de estudiantes inscritos_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Analisis de estudiantes inscritos_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Analisis de estudiantes inscritos_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Analisis de estudiantes inscritos_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Analisis de estudiantes inscritos_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Analisis de estudiantes inscritos_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Análisis de Estudiantes Inscritos</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jalorca </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="prueba-de-análisis-de-datos---estudiantes-inscritos" class="level1">
+<h1>Prueba de Análisis de datos - Estudiantes inscritos</h1>
+<p><em>Fuente:</em> <a href="https://snies.mineducacion.gov.co/portal/ESTADISTICAS/Bases-consolidadas/" class="uri">https://snies.mineducacion.gov.co/portal/ESTADISTICAS/Bases-consolidadas/</a></p>
+</section>
+<section id="librerias-empleadas" class="level1">
+<h1>Librerias empleadas</h1>
+<ul>
+<li>dplyr</li>
+<li>ggplot2</li>
+<li>readr</li>
+</ul>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="dataset" class="level1">
+<h1>Dataset</h1>
+<p>Se cargo el dataset preparado de los archivos descargados de la fuente, <em>estudiantes_inscritos.csv</em>.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"estudiantes_inscritos.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(estudiantes_incritos)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 368,608
+Columns: 33
+$ codigo_de_la_institucion              &lt;int&gt; 1101, 1101, 1101, 1101, 1101, 11…
+$ ies_padre                             &lt;int&gt; 1101, 1101, 1101, 1101, 1101, 11…
+$ institucion_de_educacion_superior_ies &lt;chr&gt; "UNIVERSIDAD NACIONAL DE COLOMBI…
+$ principal_o_seccional                 &lt;chr&gt; "PRINCIPAL", "PRINCIPAL", "PRINC…
+$ id_sector                             &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+$ sector_ies                            &lt;chr&gt; "OFICIAL", "OFICIAL", "OFICIAL",…
+$ id_caracter                           &lt;int&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,…
+$ caracter_ies                          &lt;chr&gt; "UNIVERSIDAD", "UNIVERSIDAD", "U…
+$ codigo_del_departamento_ies           &lt;int&gt; 11, 11, 11, 11, 11, 11, 11, 11, …
+$ departamento_de_domicilio_de_la_ies   &lt;chr&gt; "BOGOTA D.C.", "BOGOTA D.C.", "B…
+$ codigo_del_municipio_ies              &lt;int&gt; 11001, 11001, 11001, 11001, 1100…
+$ municipio_de_domicilio_de_la_ies      &lt;chr&gt; "BOGOTA D.C.", "BOGOTA D.C.", "B…
+$ codigo_snies_del_programa             &lt;chr&gt; "38", "38", "39", "39", "40", "4…
+$ programa_academico                    &lt;chr&gt; "ESPECIALIDAD EN CIRUGIA GENERAL…
+$ id_nivel                              &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,…
+$ nivel_academico                       &lt;chr&gt; "POSGRADO", "POSGRADO", "POSGRAD…
+$ id_nivel_formacion                    &lt;chr&gt; "1", "1", "1", "1", "1", "1", "1…
+$ nivel_de_formacion                    &lt;chr&gt; "ESPECIALIZACION", "ESPECIALIZAC…
+$ id_metodologia                        &lt;chr&gt; "1", "1", "1", "1", "1", "1", "1…
+$ metodologia                           &lt;chr&gt; "PRESENCIAL", "PRESENCIAL", "PRE…
+$ id_area                               &lt;chr&gt; "4", "4", "4", "4", "4", "4", "4…
+$ area_de_conocimiento                  &lt;chr&gt; "CIENCIAS DE LA SALUD", "CIENCIA…
+$ id_nucleo                             &lt;chr&gt; "445", "445", "445", "445", "445…
+$ nucleo_basico_del_conocimiento_nbc    &lt;chr&gt; "MEDICINA", "MEDICINA", "MEDICIN…
+$ codigo_del_departamento_programa      &lt;chr&gt; "11", "11", "11", "11", "11", "1…
+$ departamento_de_oferta_del_programa   &lt;chr&gt; "BOGOTA D.C.", "BOGOTA D.C.", "B…
+$ codigo_del_municipio_programa         &lt;chr&gt; "11001", "11001", "11001", "1100…
+$ municipio_de_oferta_del_programa      &lt;chr&gt; "BOGOTA D.C.", "BOGOTA D.C.", "B…
+$ id_genero                             &lt;int&gt; 2, 1, 2, 1, 2, 2, 1, 1, 2, 1, 2,…
+$ genero                                &lt;chr&gt; "FEMENINO", "MASCULINO", "FEMENI…
+$ ano                                   &lt;int&gt; 2014, 2014, 2014, 2014, 2014, 20…
+$ semestre                              &lt;int&gt; 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1,…
+$ cantidad_incritos                     &lt;int&gt; 48, 81, 48, 17, 46, 67, 79, 122,…</code></pre>
+</div>
+</div>
+</section>
+<section id="cosideraciones" class="level1">
+<h1>Cosideraciones</h1>
+<ul>
+<li>Valores que varian por algun caracter, simbolo, mayusculas o minusculas han sido normalizados.</li>
+</ul>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalizar los valores de la variable principal_seccional</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">principal_o_seccional =</span> <span class="fu">toupper</span>(principal_o_seccional))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalizar los valores de la variable sector_ies</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">sector_ies =</span> <span class="fu">toupper</span>(sector_ies))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalizar los valores de la variable caracter_ies</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">caracter_ies =</span> <span class="fu">toupper</span>(caracter_ies))</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">caracter_ies =</span> <span class="fu">iconv</span>(caracter_ies, <span class="at">to =</span> <span class="st">"ASCII//TRANSLIT"</span>))</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalizar los valores de la variable departamento_de_domicilio_de_la_ies</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">departamento_de_domicilio_de_la_ies =</span> <span class="fu">toupper</span>(departamento_de_domicilio_de_la_ies))</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">departamento_de_domicilio_de_la_ies=</span> <span class="fu">iconv</span>(departamento_de_domicilio_de_la_ies,<span class="at">to =</span> <span class="st">"ASCII//TRANSLIT"</span>))</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">departamento_de_domicilio_de_la_ies =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    departamento_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"GUAJIRA"</span> <span class="sc">~</span> <span class="st">"LA GUAJIRA"</span>,</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    departamento_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"NORTE DE SA"</span> <span class="sc">~</span> <span class="st">"NORTE DE SANTANDER"</span>,</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    departamento_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"VALLE DEL C"</span> <span class="sc">~</span> <span class="st">"VALLE DEL CAUCA"</span>,</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    departamento_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"ARCHIPIELAG"</span> <span class="sc">~</span> <span class="st">"ARCHIPIELAGO DE SAN ANDRES, PROVIDENCIA Y SANTA CATALINA"</span>,</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    departamento_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"SAN ANDRES Y PROVIDENCIA"</span> <span class="sc">~</span> <span class="st">"ARCHIPIELAGO DE SAN ANDRES, PROVIDENCIA Y SANTA CATALINA"</span>,</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    departamento_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"BOGOTA D.C."</span> <span class="sc">~</span> <span class="st">"BOGOTA, D.C."</span>,</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    departamento_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"BOGOTA D.C"</span> <span class="sc">~</span> <span class="st">"BOGOTA, D.C."</span>,</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    departamento_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"CUNDINAMARC"</span> <span class="sc">~</span> <span class="st">"CUNDINAMARCA"</span>,</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> departamento_de_domicilio_de_la_ies</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalizar los valores de la variable municipio_de_domicilio_de_la_ies</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">municipio_de_domicilio_de_la_ies =</span> <span class="fu">toupper</span>(municipio_de_domicilio_de_la_ies))</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">municipio_de_domicilio_de_la_ies=</span> <span class="fu">iconv</span>(municipio_de_domicilio_de_la_ies,<span class="at">to =</span> <span class="st">"ASCII//TRANSLIT"</span>))</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">municipio_de_domicilio_de_la_ies =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"SANTA FE DE"</span> <span class="sc">~</span> <span class="st">"SANTA FE DE ANTIOQUIA"</span>,</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"SANTAFE DE ANTIOQUIA"</span> <span class="sc">~</span> <span class="st">"SANTA FE DE ANTIOQUIA"</span>,</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"EL CARMEN DE"</span> <span class="sc">~</span> <span class="st">"EL CARMEN DE VIBORAL"</span>,</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"CARMEN DE VIBORAL"</span> <span class="sc">~</span> <span class="st">"EL CARMEN DE VIBORAL"</span>,</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"PUERTO BERRI"</span> <span class="sc">~</span> <span class="st">"PUERTO BERRIO"</span>,</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"BOGOTA D.C."</span> <span class="sc">~</span> <span class="st">"BOGOTA, D.C."</span>,</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"BOGOTA"</span> <span class="sc">~</span> <span class="st">"BOGOTA, D.C."</span>,</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"CARTAGENA"</span> <span class="sc">~</span> <span class="st">"CARTAGENA DE INDIAS"</span>,</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"CARTAGENA DE"</span> <span class="sc">~</span> <span class="st">"CARTAGENA DE INDIAS"</span>,</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"VILLA DE SAN"</span> <span class="sc">~</span> <span class="st">"VILLA DE SAN DIEGO DE UBATE"</span>,</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"SAN JUAN DEL"</span> <span class="sc">~</span> <span class="st">"SAN JUAN DEL CESAR"</span>,</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"VILLAVICENCI"</span> <span class="sc">~</span> <span class="st">"VILLAVICENCIO"</span>,</span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"SAN JOSE DE"</span> <span class="sc">~</span> <span class="st">"SAN JOSE DE CUCUTA"</span>,</span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"CUCUTA"</span> <span class="sc">~</span> <span class="st">"SAN JOSE DE CUCUTA"</span>,</span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"OCA?A"</span> <span class="sc">~</span> <span class="st">"OCANA"</span>,</span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"BARRANCABERM"</span> <span class="sc">~</span> <span class="st">"BARRANCABERMEJA"</span>,</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"COVENAS"</span> <span class="sc">~</span> <span class="st">"COVENAS (SUCRE)"</span>,</span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"COVEAS (SUCRE)"</span> <span class="sc">~</span> <span class="st">"COVENAS (SUCRE)"</span>,</span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"ESPINAL"</span> <span class="sc">~</span> <span class="st">"ESPINAL (CHICORAL)"</span>,</span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>    municipio_de_domicilio_de_la_ies <span class="sc">==</span> <span class="st">"GUADALAJARA"</span> <span class="sc">~</span> <span class="st">"GUADALAJARA DE BUGA"</span>,</span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> municipio_de_domicilio_de_la_ies</span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>data_ref <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">codigo_del_municipio_ies =</span> <span class="fu">c</span>(<span class="dv">5686</span>,<span class="dv">66682</span>), <span class="at">n_correcto =</span><span class="fu">c</span>(<span class="st">"SANTA ROSA DE OSOS"</span>,<span class="st">"SANTA ROSA DE CABAL"</span>))</span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span>  estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(data_ref, <span class="at">by =</span> <span class="st">"codigo_del_municipio_ies"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">municipio_de_domicilio_de_la_ies =</span> <span class="fu">coalesce</span>(n_correcto, municipio_de_domicilio_de_la_ies)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>n_correcto)</span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalizar los valores de la variable programa academico</span></span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">programa_academico =</span> <span class="fu">toupper</span>(programa_academico))</span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">programa_academico=</span> <span class="fu">iconv</span>(programa_academico,<span class="at">to =</span> <span class="st">"ASCII//TRANSLIT"</span>))</span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">codigo_snies_del_programa =</span> <span class="fu">toupper</span>(codigo_snies_del_programa))</span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a> <span class="fu">mutate</span>(<span class="at">codigo_snies_del_programa =</span> <span class="fu">replace</span>(codigo_snies_del_programa, <span class="fu">is.na</span>(codigo_snies_del_programa), <span class="st">"SIN PROGRAMA ESPECIFICO"</span>))</span>
+<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a>datos_filtrados <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">?"</span>, programa_academico))</span>
+<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a><span class="co"># Agrupa los datos filtrados por "identificador" y encuentra el valor más largo en la columna "programa_academico"</span></span>
+<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a>datos_ref <span class="ot">&lt;-</span> datos_filtrados <span class="sc">%&gt;%</span></span>
+<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(codigo_snies_del_programa) <span class="sc">%&gt;%</span></span>
+<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">programa_academico_correcto =</span> programa_academico[<span class="fu">which.max</span>(<span class="fu">nchar</span>(programa_academico))])</span>
+<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a><span class="co"># Combina "datos" con el data frame de referencia utilizando "identificador" como clave de unión</span></span>
+<span id="cb5-86"><a href="#cb5-86" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(datos_ref, <span class="at">by =</span> <span class="st">"codigo_snies_del_programa"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-88"><a href="#cb5-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">programa_academico =</span> <span class="fu">coalesce</span>(programa_academico_correcto, programa_academico)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-89"><a href="#cb5-89" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>programa_academico_correcto)  <span class="co"># Elimina la columna "programa_academico_correcto" si no es necesaria en el resultado final</span></span>
+<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-91"><a href="#cb5-91" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalizar los valores de la variable nivel</span></span>
+<span id="cb5-92"><a href="#cb5-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-93"><a href="#cb5-93" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">nivel_academico =</span> <span class="fu">toupper</span>(nivel_academico))</span>
+<span id="cb5-94"><a href="#cb5-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-95"><a href="#cb5-95" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">nivel_academico=</span> <span class="fu">iconv</span>(nivel_academico,<span class="at">to =</span> <span class="st">"ASCII//TRANSLIT"</span>))</span>
+<span id="cb5-96"><a href="#cb5-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-97"><a href="#cb5-97" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-98"><a href="#cb5-98" aria-hidden="true" tabindex="-1"></a> <span class="fu">mutate</span>(<span class="at">id_nivel =</span> <span class="fu">replace</span>(id_nivel, <span class="fu">is.na</span>(id_nivel), <span class="dv">0</span>))</span>
+<span id="cb5-99"><a href="#cb5-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-100"><a href="#cb5-100" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalizar los valores de la variable nivel de formacion</span></span>
+<span id="cb5-101"><a href="#cb5-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-102"><a href="#cb5-102" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">nivel_de_formacion =</span> <span class="fu">toupper</span>(nivel_de_formacion))</span>
+<span id="cb5-103"><a href="#cb5-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-104"><a href="#cb5-104" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">nivel_de_formacion =</span> <span class="fu">iconv</span>(nivel_de_formacion,<span class="at">to =</span> <span class="st">"ASCII//TRANSLIT"</span>))</span>
+<span id="cb5-105"><a href="#cb5-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-106"><a href="#cb5-106" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-107"><a href="#cb5-107" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id_nivel_formacion =</span> <span class="fu">gsub</span>(<span class="st">"^0+"</span>, <span class="st">""</span>, id_nivel_formacion)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-108"><a href="#cb5-108" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id_nivel_formacion =</span> <span class="fu">gsub</span>(<span class="st">"^$"</span>, <span class="st">"0"</span>, id_nivel_formacion))</span>
+<span id="cb5-109"><a href="#cb5-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-110"><a href="#cb5-110" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-111"><a href="#cb5-111" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id_nivel_formacion =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-112"><a href="#cb5-112" aria-hidden="true" tabindex="-1"></a>    id_nivel_formacion <span class="sc">==</span> <span class="st">"No aplica"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-113"><a href="#cb5-113" aria-hidden="true" tabindex="-1"></a>    id_nivel_formacion <span class="sc">==</span> <span class="st">"SIN PROGRAMA ESPECIFICO"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-114"><a href="#cb5-114" aria-hidden="true" tabindex="-1"></a>    id_nivel_formacion <span class="sc">==</span> <span class="st">"Sin programa especifico"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-115"><a href="#cb5-115" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> id_nivel_formacion</span>
+<span id="cb5-116"><a href="#cb5-116" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb5-117"><a href="#cb5-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-118"><a href="#cb5-118" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-119"><a href="#cb5-119" aria-hidden="true" tabindex="-1"></a> <span class="fu">mutate</span>(<span class="at">id_nivel_formacion =</span> <span class="fu">replace</span>(id_nivel_formacion, <span class="fu">is.na</span>(id_nivel_formacion), <span class="st">"0"</span>))</span>
+<span id="cb5-120"><a href="#cb5-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-121"><a href="#cb5-121" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-122"><a href="#cb5-122" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">nivel_de_formacion =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-123"><a href="#cb5-123" aria-hidden="true" tabindex="-1"></a>    nivel_de_formacion <span class="sc">==</span> <span class="st">"SIN PROGRAMA ESPECIFICO"</span> <span class="sc">~</span> <span class="st">"NO APLICA"</span>,</span>
+<span id="cb5-124"><a href="#cb5-124" aria-hidden="true" tabindex="-1"></a>    nivel_de_formacion <span class="sc">==</span> <span class="st">"ESPECIALIZACION"</span> <span class="sc">~</span> <span class="st">"ESPECIALIZACION UNIVERSITARIA"</span>,</span>
+<span id="cb5-125"><a href="#cb5-125" aria-hidden="true" tabindex="-1"></a>    nivel_de_formacion <span class="sc">==</span> <span class="st">"ESPECIALIZACION MEDICO QUIRUR"</span> <span class="sc">~</span> <span class="st">"ESPECIALIZACION MEDICO QUIRURGICA"</span>,</span>
+<span id="cb5-126"><a href="#cb5-126" aria-hidden="true" tabindex="-1"></a>    nivel_de_formacion <span class="sc">==</span> <span class="st">"TECNOLOGICO"</span> <span class="sc">~</span> <span class="st">"TECNOLOGICA"</span>,</span>
+<span id="cb5-127"><a href="#cb5-127" aria-hidden="true" tabindex="-1"></a>    nivel_de_formacion <span class="sc">==</span> <span class="st">"UNIVERSITARIO"</span> <span class="sc">~</span> <span class="st">"UNIVERSITARIA"</span>,</span>
+<span id="cb5-128"><a href="#cb5-128" aria-hidden="true" tabindex="-1"></a>    nivel_de_formacion <span class="sc">==</span> <span class="st">"ESPECIALIZACION TECNICO PROFE"</span> <span class="sc">~</span> <span class="st">"ESPECIALIZACION TECNICO PROFESIONAL"</span>,</span>
+<span id="cb5-129"><a href="#cb5-129" aria-hidden="true" tabindex="-1"></a>    nivel_de_formacion <span class="sc">==</span> <span class="st">"ESPECIALIZACION TECNICO PROFESIONAL"</span> <span class="sc">~</span> <span class="st">"ESPECIALIZACION TECNICO PROFESIONAL"</span>,</span>
+<span id="cb5-130"><a href="#cb5-130" aria-hidden="true" tabindex="-1"></a>    nivel_de_formacion <span class="sc">==</span> <span class="st">"ESPECIALIZACION"</span> <span class="sc">~</span> <span class="st">"ESPECIALIZACION UNIVERSITARIA"</span>,</span>
+<span id="cb5-131"><a href="#cb5-131" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> nivel_de_formacion</span>
+<span id="cb5-132"><a href="#cb5-132" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb5-133"><a href="#cb5-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-134"><a href="#cb5-134" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalizar los valores de la variable metodologia</span></span>
+<span id="cb5-135"><a href="#cb5-135" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">metodologia =</span> <span class="fu">toupper</span>(metodologia))</span>
+<span id="cb5-136"><a href="#cb5-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-137"><a href="#cb5-137" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">metodologia =</span> <span class="fu">iconv</span>(metodologia,<span class="at">to =</span> <span class="st">"ASCII//TRANSLIT"</span>))</span>
+<span id="cb5-138"><a href="#cb5-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-139"><a href="#cb5-139" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-140"><a href="#cb5-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id_metodologia =</span> <span class="fu">gsub</span>(<span class="st">"^0+"</span>, <span class="st">""</span>, id_metodologia)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-141"><a href="#cb5-141" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id_metodologia =</span> <span class="fu">gsub</span>(<span class="st">"^$"</span>, <span class="st">"0"</span>, id_metodologia))</span>
+<span id="cb5-142"><a href="#cb5-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-143"><a href="#cb5-143" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-144"><a href="#cb5-144" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id_metodologia =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-145"><a href="#cb5-145" aria-hidden="true" tabindex="-1"></a>    id_metodologia <span class="sc">==</span> <span class="st">"No aplica"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-146"><a href="#cb5-146" aria-hidden="true" tabindex="-1"></a>    id_metodologia <span class="sc">==</span> <span class="st">"SIN PROGRAMA ESPECIFICO"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-147"><a href="#cb5-147" aria-hidden="true" tabindex="-1"></a>    id_metodologia <span class="sc">==</span> <span class="st">"Sin programa especifico"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-148"><a href="#cb5-148" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> id_metodologia</span>
+<span id="cb5-149"><a href="#cb5-149" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb5-150"><a href="#cb5-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-151"><a href="#cb5-151" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-152"><a href="#cb5-152" aria-hidden="true" tabindex="-1"></a> <span class="fu">mutate</span>(<span class="at">id_metodologia=</span> <span class="fu">replace</span>(id_metodologia, <span class="fu">is.na</span>(id_metodologia), <span class="st">"0"</span>))</span>
+<span id="cb5-153"><a href="#cb5-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-154"><a href="#cb5-154" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-155"><a href="#cb5-155" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">metodologia =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-156"><a href="#cb5-156" aria-hidden="true" tabindex="-1"></a>    metodologia <span class="sc">==</span> <span class="st">"A DISTANCIA (TRADICIONAL)"</span> <span class="sc">~</span> <span class="st">"A DISTANCIA"</span>,</span>
+<span id="cb5-157"><a href="#cb5-157" aria-hidden="true" tabindex="-1"></a>    metodologia <span class="sc">==</span> <span class="st">"DISTANCIA (TRADICIO"</span> <span class="sc">~</span> <span class="st">"A DISTANCIA"</span>,</span>
+<span id="cb5-158"><a href="#cb5-158" aria-hidden="true" tabindex="-1"></a>    metodologia <span class="sc">==</span> <span class="st">"DISTANCIA (TRADICION"</span> <span class="sc">~</span> <span class="st">"A DISTANCIA"</span>,</span>
+<span id="cb5-159"><a href="#cb5-159" aria-hidden="true" tabindex="-1"></a>    metodologia <span class="sc">==</span> <span class="st">"DISTANCIA (TRADICIONAL)"</span> <span class="sc">~</span> <span class="st">"A DISTANCIA"</span>,</span>
+<span id="cb5-160"><a href="#cb5-160" aria-hidden="true" tabindex="-1"></a>    metodologia <span class="sc">==</span> <span class="st">"A DISTANCIA (VIRTUAL)"</span> <span class="sc">~</span> <span class="st">"VIRTUAL"</span>,</span>
+<span id="cb5-161"><a href="#cb5-161" aria-hidden="true" tabindex="-1"></a>    metodologia <span class="sc">==</span> <span class="st">"DISTANCIA (VIRTUAL)"</span> <span class="sc">~</span> <span class="st">"VIRTUAL"</span>,</span>
+<span id="cb5-162"><a href="#cb5-162" aria-hidden="true" tabindex="-1"></a>    metodologia <span class="sc">==</span> <span class="st">"SIN PROGRAMA ESPECIFICO"</span> <span class="sc">~</span> <span class="st">"NO APLICA"</span>,</span>
+<span id="cb5-163"><a href="#cb5-163" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> metodologia</span>
+<span id="cb5-164"><a href="#cb5-164" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb5-165"><a href="#cb5-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-166"><a href="#cb5-166" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalizar los valores de la variable area de conocimiento</span></span>
+<span id="cb5-167"><a href="#cb5-167" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">area_de_conocimiento =</span> <span class="fu">toupper</span>(area_de_conocimiento))</span>
+<span id="cb5-168"><a href="#cb5-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-169"><a href="#cb5-169" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">area_de_conocimiento =</span> <span class="fu">iconv</span>(area_de_conocimiento,<span class="at">to =</span> <span class="st">"ASCII//TRANSLIT"</span>))</span>
+<span id="cb5-170"><a href="#cb5-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-171"><a href="#cb5-171" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-172"><a href="#cb5-172" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id_area =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-173"><a href="#cb5-173" aria-hidden="true" tabindex="-1"></a>    id_area <span class="sc">==</span> <span class="st">"No aplica"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-174"><a href="#cb5-174" aria-hidden="true" tabindex="-1"></a>    id_area <span class="sc">==</span> <span class="st">"SIN PROGRAMA ESPECIFICO"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-175"><a href="#cb5-175" aria-hidden="true" tabindex="-1"></a>    id_area <span class="sc">==</span> <span class="st">"Sin clasificar"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-176"><a href="#cb5-176" aria-hidden="true" tabindex="-1"></a>    id_area <span class="sc">==</span> <span class="st">"Sin programa especifico"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-177"><a href="#cb5-177" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> id_area</span>
+<span id="cb5-178"><a href="#cb5-178" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb5-179"><a href="#cb5-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-180"><a href="#cb5-180" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-181"><a href="#cb5-181" aria-hidden="true" tabindex="-1"></a> <span class="fu">mutate</span>(<span class="at">id_area=</span> <span class="fu">replace</span>(id_area, <span class="fu">is.na</span>(id_area), <span class="st">"0"</span>))</span>
+<span id="cb5-182"><a href="#cb5-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-183"><a href="#cb5-183" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-184"><a href="#cb5-184" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">area_de_conocimiento =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-185"><a href="#cb5-185" aria-hidden="true" tabindex="-1"></a>    area_de_conocimiento <span class="sc">==</span> <span class="st">"SIN CLASIFICAR"</span> <span class="sc">~</span> <span class="st">"NO APLICA"</span>,</span>
+<span id="cb5-186"><a href="#cb5-186" aria-hidden="true" tabindex="-1"></a>    area_de_conocimiento <span class="sc">==</span> <span class="st">"SIN PROGRAMA ESPECIFICO"</span> <span class="sc">~</span> <span class="st">"NO APLICA"</span>,</span>
+<span id="cb5-187"><a href="#cb5-187" aria-hidden="true" tabindex="-1"></a>    area_de_conocimiento <span class="sc">==</span> <span class="st">"AGRONOMIA VETERINARIA Y AFINES"</span> <span class="sc">~</span> <span class="st">"AGRONOMIA, VETERINARIA Y AFINES"</span>,</span>
+<span id="cb5-188"><a href="#cb5-188" aria-hidden="true" tabindex="-1"></a>    area_de_conocimiento <span class="sc">==</span> <span class="st">"ECONOMIA ADMINISTRACION CONTADURIA Y AFINES"</span> <span class="sc">~</span> <span class="st">"ECONOMIA, ADMINISTRACION, CONTADURIA Y AFINES"</span>,</span>
+<span id="cb5-189"><a href="#cb5-189" aria-hidden="true" tabindex="-1"></a>    area_de_conocimiento <span class="sc">==</span> <span class="st">"INGENIERIA ARQUITECTURA URBANISMO Y AFINES"</span> <span class="sc">~</span> <span class="st">"INGENIERIA, ARQUITECTURA, URBANISMO Y AFINES"</span>,</span>
+<span id="cb5-190"><a href="#cb5-190" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> area_de_conocimiento</span>
+<span id="cb5-191"><a href="#cb5-191" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb5-192"><a href="#cb5-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-193"><a href="#cb5-193" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalizar los valores de la variable nucleo del conocimiento</span></span>
+<span id="cb5-194"><a href="#cb5-194" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">nucleo_basico_del_conocimiento_nbc =</span> <span class="fu">toupper</span>(nucleo_basico_del_conocimiento_nbc))</span>
+<span id="cb5-195"><a href="#cb5-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-196"><a href="#cb5-196" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">nucleo_basico_del_conocimiento_nbc =</span> <span class="fu">iconv</span>(nucleo_basico_del_conocimiento_nbc,<span class="at">to =</span> <span class="st">"ASCII//TRANSLIT"</span>))</span>
+<span id="cb5-197"><a href="#cb5-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-198"><a href="#cb5-198" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-199"><a href="#cb5-199" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id_nucleo =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-200"><a href="#cb5-200" aria-hidden="true" tabindex="-1"></a>    id_nucleo <span class="sc">==</span> <span class="st">"No aplica"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-201"><a href="#cb5-201" aria-hidden="true" tabindex="-1"></a>    id_nucleo <span class="sc">==</span> <span class="st">"SIN PROGRAMA ESPECIFICO"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-202"><a href="#cb5-202" aria-hidden="true" tabindex="-1"></a>    id_nucleo <span class="sc">==</span> <span class="st">"Sin clasificar"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-203"><a href="#cb5-203" aria-hidden="true" tabindex="-1"></a>    id_nucleo <span class="sc">==</span> <span class="st">"Sin programa especifico"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-204"><a href="#cb5-204" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> id_nucleo</span>
+<span id="cb5-205"><a href="#cb5-205" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb5-206"><a href="#cb5-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-207"><a href="#cb5-207" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-208"><a href="#cb5-208" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id_nucleo=</span> <span class="fu">gsub</span>(<span class="st">".*-.*"</span>, <span class="st">"0"</span>, id_nucleo))</span>
+<span id="cb5-209"><a href="#cb5-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-210"><a href="#cb5-210" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-211"><a href="#cb5-211" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">nucleo_basico_del_conocimiento_nbc=</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-212"><a href="#cb5-212" aria-hidden="true" tabindex="-1"></a>    nucleo_basico_del_conocimiento_nbc <span class="sc">==</span> <span class="st">"N/A"</span> <span class="sc">~</span> <span class="st">"NO APLICA"</span>,</span>
+<span id="cb5-213"><a href="#cb5-213" aria-hidden="true" tabindex="-1"></a>    nucleo_basico_del_conocimiento_nbc <span class="sc">==</span> <span class="st">"SIN CLASIFICAR"</span> <span class="sc">~</span> <span class="st">"NO APLICA"</span>,</span>
+<span id="cb5-214"><a href="#cb5-214" aria-hidden="true" tabindex="-1"></a>    nucleo_basico_del_conocimiento_nbc <span class="sc">==</span> <span class="st">"SIN PROGRAMA ESPECIFICO"</span> <span class="sc">~</span> <span class="st">"NO APLICA"</span>,</span>
+<span id="cb5-215"><a href="#cb5-215" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> nucleo_basico_del_conocimiento_nbc</span>
+<span id="cb5-216"><a href="#cb5-216" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb5-217"><a href="#cb5-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-218"><a href="#cb5-218" aria-hidden="true" tabindex="-1"></a>datos_filtrados <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-219"><a href="#cb5-219" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">?"</span>, nucleo_basico_del_conocimiento_nbc))</span>
+<span id="cb5-220"><a href="#cb5-220" aria-hidden="true" tabindex="-1"></a><span class="co"># Agrupa los datos filtrados por "identificador" y encuentra el valor más largo en la columna "programa_academico"</span></span>
+<span id="cb5-221"><a href="#cb5-221" aria-hidden="true" tabindex="-1"></a>datos_ref <span class="ot">&lt;-</span> datos_filtrados <span class="sc">%&gt;%</span></span>
+<span id="cb5-222"><a href="#cb5-222" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id_nucleo) <span class="sc">%&gt;%</span></span>
+<span id="cb5-223"><a href="#cb5-223" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">nucleo_conocimiento_correcto =</span> nucleo_basico_del_conocimiento_nbc[<span class="fu">which.max</span>(<span class="fu">nchar</span>(nucleo_basico_del_conocimiento_nbc))])</span>
+<span id="cb5-224"><a href="#cb5-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-225"><a href="#cb5-225" aria-hidden="true" tabindex="-1"></a><span class="co"># Combina "datos" con el data frame de referencia utilizando "identificador" como clave de unión</span></span>
+<span id="cb5-226"><a href="#cb5-226" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-227"><a href="#cb5-227" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(datos_ref, <span class="at">by =</span> <span class="st">"id_nucleo"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-228"><a href="#cb5-228" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">nucleo_basico_del_conocimiento_nbc =</span> <span class="fu">coalesce</span>(nucleo_conocimiento_correcto, nucleo_basico_del_conocimiento_nbc)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-229"><a href="#cb5-229" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>nucleo_conocimiento_correcto)  <span class="co"># Elimina la columna "programa_academico_correcto" si no es necesaria en el resultado final</span></span>
+<span id="cb5-230"><a href="#cb5-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-231"><a href="#cb5-231" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalizar los valores de la variable Departamento de oferta del programa</span></span>
+<span id="cb5-232"><a href="#cb5-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-233"><a href="#cb5-233" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">departamento_de_oferta_del_programa =</span> <span class="fu">toupper</span>(departamento_de_oferta_del_programa))</span>
+<span id="cb5-234"><a href="#cb5-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-235"><a href="#cb5-235" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">departamento_de_oferta_del_programa =</span> <span class="fu">iconv</span>(departamento_de_oferta_del_programa, <span class="at">to =</span> <span class="st">"ASCII//TRANSLIT"</span>))</span>
+<span id="cb5-236"><a href="#cb5-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-237"><a href="#cb5-237" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-238"><a href="#cb5-238" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">codigo_del_departamento_programa =</span> <span class="fu">gsub</span>(<span class="st">"^0+"</span>, <span class="st">""</span>, codigo_del_departamento_programa)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-239"><a href="#cb5-239" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">codigo_del_departamento_programa =</span> <span class="fu">gsub</span>(<span class="st">"^$"</span>, <span class="st">"0"</span>, codigo_del_departamento_programa))</span>
+<span id="cb5-240"><a href="#cb5-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-241"><a href="#cb5-241" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-242"><a href="#cb5-242" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">codigo_del_departamento_programa =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-243"><a href="#cb5-243" aria-hidden="true" tabindex="-1"></a>    codigo_del_departamento_programa <span class="sc">==</span> <span class="st">"No aplica"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-244"><a href="#cb5-244" aria-hidden="true" tabindex="-1"></a>    codigo_del_departamento_programa <span class="sc">==</span> <span class="st">"SIN PROGRAMA ESPECIFICO"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-245"><a href="#cb5-245" aria-hidden="true" tabindex="-1"></a>    codigo_del_departamento_programa <span class="sc">==</span> <span class="st">"Sin programa especifico"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-246"><a href="#cb5-246" aria-hidden="true" tabindex="-1"></a>    codigo_del_departamento_programa <span class="sc">==</span> <span class="st">"2"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-247"><a href="#cb5-247" aria-hidden="true" tabindex="-1"></a>    codigo_del_departamento_programa <span class="sc">==</span> <span class="st">"22"</span> <span class="sc">~</span> <span class="st">"20"</span>,</span>
+<span id="cb5-248"><a href="#cb5-248" aria-hidden="true" tabindex="-1"></a>    codigo_del_departamento_programa <span class="sc">==</span> <span class="st">"72"</span> <span class="sc">~</span> <span class="st">"70"</span>,</span>
+<span id="cb5-249"><a href="#cb5-249" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> codigo_del_departamento_programa</span>
+<span id="cb5-250"><a href="#cb5-250" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb5-251"><a href="#cb5-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-252"><a href="#cb5-252" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">departamento_de_oferta_del_programa =</span> <span class="fu">ifelse</span>(codigo_del_departamento_programa <span class="sc">==</span> <span class="st">"52"</span> <span class="sc">&amp;</span> departamento_de_oferta_del_programa <span class="sc">==</span> <span class="st">"META"</span>, <span class="st">"NARINO"</span>, departamento_de_oferta_del_programa))</span>
+<span id="cb5-253"><a href="#cb5-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-254"><a href="#cb5-254" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-255"><a href="#cb5-255" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">departamento_de_oferta_del_programa =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-256"><a href="#cb5-256" aria-hidden="true" tabindex="-1"></a>    departamento_de_oferta_del_programa <span class="sc">==</span> <span class="st">"SIN PROGRAMA ESPECIFICO"</span> <span class="sc">~</span> <span class="st">"NO APLICA"</span>,</span>
+<span id="cb5-257"><a href="#cb5-257" aria-hidden="true" tabindex="-1"></a>    departamento_de_oferta_del_programa <span class="sc">==</span> <span class="st">"SIN PROGRAMA ESPECIFICOA"</span> <span class="sc">~</span> <span class="st">"NO APLICA"</span>,</span>
+<span id="cb5-258"><a href="#cb5-258" aria-hidden="true" tabindex="-1"></a>    departamento_de_oferta_del_programa <span class="sc">==</span> <span class="st">"BOGOTA D.C"</span> <span class="sc">~</span> <span class="st">"BOGOTA, D.C."</span>,</span>
+<span id="cb5-259"><a href="#cb5-259" aria-hidden="true" tabindex="-1"></a>    departamento_de_oferta_del_programa <span class="sc">==</span> <span class="st">"BOGOTA D.C."</span> <span class="sc">~</span> <span class="st">"BOGOTA, D.C."</span>,</span>
+<span id="cb5-260"><a href="#cb5-260" aria-hidden="true" tabindex="-1"></a>    departamento_de_oferta_del_programa <span class="sc">==</span> <span class="st">"GUAJIRA"</span> <span class="sc">~</span> <span class="st">"LA GUAJIRA"</span>,</span>
+<span id="cb5-261"><a href="#cb5-261" aria-hidden="true" tabindex="-1"></a>    departamento_de_oferta_del_programa <span class="sc">==</span> <span class="st">"NARINIO"</span> <span class="sc">~</span> <span class="st">"NARINO"</span>,</span>
+<span id="cb5-262"><a href="#cb5-262" aria-hidden="true" tabindex="-1"></a>    departamento_de_oferta_del_programa <span class="sc">==</span> <span class="st">"ARCHIPIELAGO DE"</span> <span class="sc">~</span> <span class="st">"ARCHIPIELAGO DE SAN ANDRES, PROVIDENCIA Y SANTA CATALINA"</span>,</span>
+<span id="cb5-263"><a href="#cb5-263" aria-hidden="true" tabindex="-1"></a>    departamento_de_oferta_del_programa <span class="sc">==</span> <span class="st">"SAN ANDRES Y PROVIDENCIA"</span> <span class="sc">~</span> <span class="st">"ARCHIPIELAGO DE SAN ANDRES, PROVIDENCIA Y SANTA CATALINA"</span>,</span>
+<span id="cb5-264"><a href="#cb5-264" aria-hidden="true" tabindex="-1"></a>    departamento_de_oferta_del_programa <span class="sc">==</span> <span class="st">"N/A"</span> <span class="sc">~</span> <span class="st">"NO APLICA"</span>,</span>
+<span id="cb5-265"><a href="#cb5-265" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> departamento_de_oferta_del_programa</span>
+<span id="cb5-266"><a href="#cb5-266" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb5-267"><a href="#cb5-267" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-268"><a href="#cb5-268" aria-hidden="true" tabindex="-1"></a> <span class="fu">mutate</span>(<span class="at">codigo_del_departamento_programa=</span> <span class="fu">replace</span>(codigo_del_departamento_programa, <span class="fu">is.na</span>(id_area), <span class="st">"0"</span>))</span>
+<span id="cb5-269"><a href="#cb5-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-270"><a href="#cb5-270" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalizar los valores de la variable municipio de oferta del programa</span></span>
+<span id="cb5-271"><a href="#cb5-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-272"><a href="#cb5-272" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">municipio_de_oferta_del_programa =</span> <span class="fu">toupper</span>(municipio_de_oferta_del_programa))</span>
+<span id="cb5-273"><a href="#cb5-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-274"><a href="#cb5-274" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">municipio_de_oferta_del_programa =</span> <span class="fu">iconv</span>(municipio_de_oferta_del_programa, <span class="at">to =</span> <span class="st">"ASCII//TRANSLIT"</span>))</span>
+<span id="cb5-275"><a href="#cb5-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-276"><a href="#cb5-276" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-277"><a href="#cb5-277" aria-hidden="true" tabindex="-1"></a> <span class="fu">mutate</span>(<span class="at">codigo_del_municipio_programa =</span> <span class="fu">replace</span>(codigo_del_municipio_programa, <span class="fu">is.na</span>(codigo_del_municipio_programa), <span class="st">"0"</span>))</span>
+<span id="cb5-278"><a href="#cb5-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-279"><a href="#cb5-279" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-280"><a href="#cb5-280" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">codigo_del_municipio_programa =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-281"><a href="#cb5-281" aria-hidden="true" tabindex="-1"></a>    codigo_del_municipio_programa <span class="sc">==</span> <span class="st">"Sin programa especifico"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-282"><a href="#cb5-282" aria-hidden="true" tabindex="-1"></a>    codigo_del_municipio_programa <span class="sc">==</span> <span class="st">"SIN PROGRAMA ESPECIFICO"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-283"><a href="#cb5-283" aria-hidden="true" tabindex="-1"></a>    codigo_del_municipio_programa <span class="sc">==</span> <span class="st">"No aplica"</span> <span class="sc">~</span> <span class="st">"0"</span>,</span>
+<span id="cb5-284"><a href="#cb5-284" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> codigo_del_municipio_programa</span>
+<span id="cb5-285"><a href="#cb5-285" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb5-286"><a href="#cb5-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-287"><a href="#cb5-287" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-288"><a href="#cb5-288" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">municipio_de_oferta_del_programa =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-289"><a href="#cb5-289" aria-hidden="true" tabindex="-1"></a>    municipio_de_oferta_del_programa <span class="sc">==</span> <span class="st">"Sin programa especifico"</span> <span class="sc">~</span> <span class="st">"NO APLICA"</span>,</span>
+<span id="cb5-290"><a href="#cb5-290" aria-hidden="true" tabindex="-1"></a>    municipio_de_oferta_del_programa <span class="sc">==</span> <span class="st">"SIN PROGRAMA ESPECIFICO"</span> <span class="sc">~</span> <span class="st">"NO APLICA"</span>,</span>
+<span id="cb5-291"><a href="#cb5-291" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> municipio_de_oferta_del_programa</span>
+<span id="cb5-292"><a href="#cb5-292" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb5-293"><a href="#cb5-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-294"><a href="#cb5-294" aria-hidden="true" tabindex="-1"></a>datos_filtrados <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-295"><a href="#cb5-295" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">?"</span>, municipio_de_oferta_del_programa))</span>
+<span id="cb5-296"><a href="#cb5-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-297"><a href="#cb5-297" aria-hidden="true" tabindex="-1"></a><span class="co"># Agrupa los datos filtrados por "identificador" y encuentra el valor más largo en la columna "programa_academico"</span></span>
+<span id="cb5-298"><a href="#cb5-298" aria-hidden="true" tabindex="-1"></a>datos_ref <span class="ot">&lt;-</span> datos_filtrados <span class="sc">%&gt;%</span></span>
+<span id="cb5-299"><a href="#cb5-299" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(codigo_del_municipio_programa) <span class="sc">%&gt;%</span></span>
+<span id="cb5-300"><a href="#cb5-300" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">muni_correcto =</span> municipio_de_oferta_del_programa[<span class="fu">which.max</span>(<span class="fu">nchar</span>(municipio_de_oferta_del_programa))])</span>
+<span id="cb5-301"><a href="#cb5-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-302"><a href="#cb5-302" aria-hidden="true" tabindex="-1"></a><span class="co"># Combina "datos" con el data frame de referencia utilizando "identificador" como clave de unión</span></span>
+<span id="cb5-303"><a href="#cb5-303" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-304"><a href="#cb5-304" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(datos_ref, <span class="at">by =</span> <span class="st">"codigo_del_municipio_programa"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-305"><a href="#cb5-305" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">municipio_de_oferta_del_programa =</span> <span class="fu">coalesce</span>(muni_correcto, municipio_de_oferta_del_programa)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-306"><a href="#cb5-306" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>muni_correcto)  <span class="co"># Elimina la columna "programa_academico_correcto" si no es necesaria en el resultado final</span></span>
+<span id="cb5-307"><a href="#cb5-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-308"><a href="#cb5-308" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalizar los valores de la variable municipio de oferta del programa</span></span>
+<span id="cb5-309"><a href="#cb5-309" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">genero =</span> <span class="fu">toupper</span>(genero))</span>
+<span id="cb5-310"><a href="#cb5-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-311"><a href="#cb5-311" aria-hidden="true" tabindex="-1"></a>estudiantes_incritos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb5-312"><a href="#cb5-312" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">genero =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-313"><a href="#cb5-313" aria-hidden="true" tabindex="-1"></a>    genero <span class="sc">==</span> <span class="st">"HOMBRE"</span> <span class="sc">~</span> <span class="st">"MASCULINO"</span>,</span>
+<span id="cb5-314"><a href="#cb5-314" aria-hidden="true" tabindex="-1"></a>    genero <span class="sc">==</span> <span class="st">"MUJER"</span> <span class="sc">~</span> <span class="st">"FEMENINO"</span>,</span>
+<span id="cb5-315"><a href="#cb5-315" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> genero</span>
+<span id="cb5-316"><a href="#cb5-316" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="tablas-de-datos-unicos" class="level1">
+<h1>Tablas de datos unicos</h1>
+<section id="instituciones" class="level2">
+<h2 class="anchored" data-anchor-id="instituciones">Instituciones</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>instituciones <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">count</span>(ies_padre,codigo_de_la_institucion, institucion_de_educacion_superior_ies,principal_o_seccional)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(instituciones)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 442
+Columns: 5
+$ ies_padre                             &lt;int&gt; 1101, 1101, 1101, 1101, 1101, 11…
+$ codigo_de_la_institucion              &lt;int&gt; 1101, 1102, 1103, 1104, 1124, 11…
+$ institucion_de_educacion_superior_ies &lt;chr&gt; "UNIVERSIDAD NACIONAL DE COLOMBI…
+$ principal_o_seccional                 &lt;chr&gt; "PRINCIPAL", "SECCIONAL", "SECCI…
+$ n                                     &lt;int&gt; 4786, 2282, 1001, 400, 1, 50, 44…</code></pre>
+</div>
+</div>
+</section>
+<section id="sector" class="level2">
+<h2 class="anchored" data-anchor-id="sector">Sector</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>sector <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">count</span>(id_sector, sector_ies)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="caracter" class="level2">
+<h2 class="anchored" data-anchor-id="caracter">Caracter</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>caracter <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">count</span>(id_caracter, caracter_ies)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="departamento" class="level2">
+<h2 class="anchored" data-anchor-id="departamento">Departamento</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>departamento <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">count</span>(codigo_del_departamento_ies, departamento_de_domicilio_de_la_ies)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="municipalidad" class="level2">
+<h2 class="anchored" data-anchor-id="municipalidad">Municipalidad</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>municipio <span class="ot">&lt;-</span>  estudiantes_incritos <span class="sc">%&gt;%</span>  <span class="fu">count</span>(codigo_del_municipio_ies, municipio_de_domicilio_de_la_ies)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="programa-academico" class="level2">
+<h2 class="anchored" data-anchor-id="programa-academico">Programa Academico</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>programa_academico <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">count</span>(codigo_snies_del_programa,programa_academico) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="nivel-academico" class="level2">
+<h2 class="anchored" data-anchor-id="nivel-academico">Nivel academico</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>nivel_academico <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">count</span>(id_nivel, nivel_academico)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="nivel-de-formacion" class="level2">
+<h2 class="anchored" data-anchor-id="nivel-de-formacion">Nivel de formacion</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>nivel_de_formacion <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">count</span>(id_nivel_formacion,nivel_de_formacion)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="metodologia" class="level2">
+<h2 class="anchored" data-anchor-id="metodologia">Metodologia</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>metodologia <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">count</span>(id_metodologia, metodologia)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="area-de-conocimiento" class="level2">
+<h2 class="anchored" data-anchor-id="area-de-conocimiento">Area de conocimiento</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>area_de_conocimiento <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">count</span>(id_area, area_de_conocimiento)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="nucleo-del-conocimiento" class="level2">
+<h2 class="anchored" data-anchor-id="nucleo-del-conocimiento">Nucleo del conocimiento</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>nucleo_del_conocimiento <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">count</span>(id_nucleo, nucleo_basico_del_conocimiento_nbc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="departamento-de-oferta-del-programa" class="level2">
+<h2 class="anchored" data-anchor-id="departamento-de-oferta-del-programa">Departamento de oferta del programa</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>departamento_oferta_programa <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">count</span>(codigo_del_departamento_programa, departamento_de_oferta_del_programa)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="municipio-de-oferta-del-programa" class="level2">
+<h2 class="anchored" data-anchor-id="municipio-de-oferta-del-programa">Municipio de oferta del programa</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>municipio_oferta_programa <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">count</span>(codigo_del_municipio_programa,municipio_de_oferta_del_programa)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="genero" class="level2">
+<h2 class="anchored" data-anchor-id="genero">Genero</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>genero <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span> <span class="fu">count</span>(id_genero,genero)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="analisis" class="level1">
+<h1>Analisis</h1>
+<section id="gráfico-de-barras-para-visualizar-la-cantidad-de-inscritos-por-nivel-académico" class="level2">
+<h2 class="anchored" data-anchor-id="gráfico-de-barras-para-visualizar-la-cantidad-de-inscritos-por-nivel-académico">Gráfico de barras para visualizar la cantidad de inscritos por nivel académico</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(estudiantes_incritos, <span class="fu">aes</span>(<span class="at">x =</span> nivel_academico, <span class="at">y =</span> cantidad_incritos)) <span class="sc">+</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cantidad de inscritos por nivel académico"</span>,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Nivel académico"</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Cantidad de inscritos"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Analisis-de-estudiantes-inscritos_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="gráfico-de-puntos-para-visualizar-la-relación-entre-el-año-y-la-cantidad-de-inscritos" class="level2">
+<h2 class="anchored" data-anchor-id="gráfico-de-puntos-para-visualizar-la-relación-entre-el-año-y-la-cantidad-de-inscritos">Gráfico de puntos para visualizar la relación entre el año y la cantidad de inscritos</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(estudiantes_incritos, <span class="fu">aes</span>(<span class="at">x =</span> nivel_academico, <span class="at">y =</span> cantidad_incritos, <span class="at">fill =</span> genero)) <span class="sc">+</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="st">"stack"</span>) <span class="sc">+</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cantidad de inscritos por género y nivel académico"</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Nivel académico"</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Cantidad de inscritos"</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Género"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Analisis-de-estudiantes-inscritos_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="diagrama-circular-entre-cantidad-de-inscritos-y-genero" class="level2">
+<h2 class="anchored" data-anchor-id="diagrama-circular-entre-cantidad-de-inscritos-y-genero">Diagrama circular entre cantidad de inscritos y genero</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>datos_resumidos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(genero) <span class="sc">%&gt;%</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">cantidad_incritos =</span> <span class="fu">sum</span>(cantidad_incritos))</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>total_incritos <span class="ot">&lt;-</span> <span class="fu">sum</span>(datos_resumidos<span class="sc">$</span>cantidad_incritos)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>datos_resumidos <span class="ot">&lt;-</span> datos_resumidos <span class="sc">%&gt;%</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">porcentaje =</span> (cantidad_incritos <span class="sc">/</span> total_incritos) <span class="sc">*</span> <span class="dv">100</span>)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(datos_resumidos, <span class="fu">aes</span>(<span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> porcentaje, <span class="at">fill =</span> genero)) <span class="sc">+</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">width =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_polar</span>(<span class="st">"y"</span>, <span class="at">start =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Proporción de inscritos por género"</span>,</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.line =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.ticks =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.border =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.title =</span> <span class="fu">element_blank</span>()) <span class="sc">+</span>  <span class="co"># Eliminar título de la leyenda</span></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste</span>(<span class="fu">round</span>(porcentaje, <span class="dv">1</span>), <span class="st">"%"</span>)), <span class="at">position =</span> <span class="fu">position_stack</span>(<span class="at">vjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Analisis-de-estudiantes-inscritos_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="gráfico-lineal-para-visualizar-la-relación-entre-el-año-y-la-cantidad-de-inscritos" class="level2">
+<h2 class="anchored" data-anchor-id="gráfico-lineal-para-visualizar-la-relación-entre-el-año-y-la-cantidad-de-inscritos">Gráfico lineal para visualizar la relación entre el año y la cantidad de inscritos</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>datos_resumidos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ano) <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">cantidad_incritos =</span> <span class="fu">sum</span>(cantidad_incritos))</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(datos_resumidos, <span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> cantidad_incritos)) <span class="sc">+</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Variación de la cantidad de inscritos por año"</span>,</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Año"</span>,</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Cantidad de inscritos"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Analisis-de-estudiantes-inscritos_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="gráfico-lineal-para-visualizar-la-relación-entre-el-año-y-la-cantidad-de-inscritos-por-area-de-conocimiento" class="level2">
+<h2 class="anchored" data-anchor-id="gráfico-lineal-para-visualizar-la-relación-entre-el-año-y-la-cantidad-de-inscritos-por-area-de-conocimiento">Gráfico lineal para visualizar la relación entre el año y la cantidad de inscritos por area de conocimiento</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>datos_resumidos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ano, area_de_conocimiento) <span class="sc">%&gt;%</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">cantidad_incritos =</span> <span class="fu">sum</span>(cantidad_incritos))</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(datos_resumidos, <span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> cantidad_incritos, <span class="at">color =</span> area_de_conocimiento)) <span class="sc">+</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Evolución de la cantidad de inscritos por año y área de conocimiento"</span>,</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Año"</span>,</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Cantidad de inscritos"</span>,</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Área de conocimiento"</span>) <span class="sc">+</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_discrete</span>(<span class="at">name =</span> <span class="st">"Área de conocimiento"</span>)<span class="sc">+</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Analisis-de-estudiantes-inscritos_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="grafica-de-estudiantes-inscritos-vs-sector" class="level1">
+<h1>Grafica de estudiantes inscritos vs sector</h1>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Resumir los datos por sector y sumar la cantidad de inscritos en cada caso</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>datos_resumidos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sector_ies) <span class="sc">%&gt;%</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">cantidad_incritos =</span> <span class="fu">sum</span>(cantidad_incritos))</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear la gráfica de barras</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(datos_resumidos, <span class="fu">aes</span>(<span class="at">x =</span> sector_ies, <span class="at">y =</span> cantidad_incritos, <span class="at">fill =</span> sector_ies)) <span class="sc">+</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cantidad de estudiantes inscritos por sector"</span>,</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Sector"</span>,</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Cantidad de estudiantes inscritos"</span>) <span class="sc">+</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">fill =</span> <span class="cn">FALSE</span>)  <span class="co"># Para ocultar la leyenda</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Analisis-de-estudiantes-inscritos_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>datos_resumidos <span class="ot">&lt;-</span> estudiantes_incritos <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(nivel_de_formacion) <span class="sc">%&gt;%</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">cantidad_incritos =</span> <span class="fu">sum</span>(cantidad_incritos))</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Ordenar los niveles de formación de manera lógica</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>datos_resumidos<span class="sc">$</span>nivel_de_formacion <span class="ot">&lt;-</span> <span class="fu">factor</span>(datos_resumidos<span class="sc">$</span>nivel_de_formacion,</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>                                             <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Técnico"</span>, <span class="st">"Tecnólogo"</span>, <span class="st">"Pregrado"</span>, <span class="st">"Especialización"</span>, <span class="st">"Maestría"</span>, <span class="st">"Doctorado"</span>))</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear la gráfica de barras</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(datos_resumidos, <span class="fu">aes</span>(<span class="at">x =</span> nivel_de_formacion, <span class="at">y =</span> cantidad_incritos, <span class="at">fill =</span> nivel_de_formacion)) <span class="sc">+</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cantidad de estudiantes inscritos por nivel de formación"</span>,</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Nivel de formación"</span>,</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Cantidad de estudiantes inscritos"</span>) <span class="sc">+</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)  <span class="co"># Paleta de colores predefinida</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Analisis-de-estudiantes-inscritos_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
